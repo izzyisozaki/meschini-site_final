@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Titolo della pagina -->
+    <title>Conferma Eliminazione</title>
+    
+    <!-- 
+        Stile minimale per distinguere visivamente l'azione pericolosa (eliminazione)
+        Il frontend potrà stilizzare meglio in seguito
+        Colori: giallo per avviso, rosso per pulsante pericoloso
+    -->
+    <style>
+        .warning-box {
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .danger-button {
+            background-color: #dc3545;
+            color:  white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .danger-button:hover {
+            background-color: #c82333;
+        }
+        .cancel-link {
+            margin-left: 10px;
+            padding: 10px 20px;
+            text-decoration: none;
+            background-color: #6c757d;
+            color: white;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .cancel-link:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <!-- 
+        Titolo della pagina di conferma
+        Icona ⚠️ per attirare l'attenzione sull'azione pericolosa
+    -->
+    <h2>⚠️ Conferma Eliminazione</h2>
+    
+    <!-- 
+        Box di avviso visivo con sfondo giallo
+        Contiene i dettagli dell'esperienza che sta per essere eliminata
+        L'utente può verificare di star eliminando quella giusta
+    -->
+    <div class="warning-box">
+        <p><strong>Sei sicuro di voler eliminare questa esperienza lavorativa?</strong></p>
+        
+        <!-- 
+            Mostra i dettagli completi dell'esperienza per conferma
+            Aiuta l'utente a verificare prima di confermare
+        -->
+        <ul>
+            <li><strong>Posizione:</strong> {{ esperienza.titolo }}</li>
+            <li><strong>Azienda:</strong> {{ esperienza.azienda }}</li>
+            <li><strong>Periodo:</strong> 
+                {{ esperienza.data_inizio }} - 
+                <!-- Se data_fine è vuota, mostra "Presente" -->
+                {% if esperienza.data_fine %}
+                    {{ esperienza.data_fine }}
+                {% else %}
+                    Presente
+                {% endif %}
+            </li>
+            <li><strong>Descrizione:</strong> {{ esperienza.descrizione|truncatewords:20 }}</li>
+        </ul>
+        
+        <!-- 
+            Avviso rosso che l'azione è irreversibile
+            Importante per evitare eliminazioni accidentali
+        -->
+        <p style="color: red;"><strong>⚠️ Questa azione è irreversibile!</strong></p>
+    </div>
+    
+    <!-- 
+        FORM per confermare l'eliminazione
+        method="post" → Invia richiesta POST per eliminare definitivamente
+        action="" → Invia alla stessa URL che gestisce sia GET (mostra conferma) che POST (elimina)
+    -->
+    <form method="post" action="">
+        <!-- 
+            {% csrf_token %}
+            Token di sicurezza obbligatorio in Django per proteggere da attacchi CSRF
+            Senza questo, Django blocca la richiesta POST con errore 403
+        -->
+        {% csrf_token %}
+        
+        <!-- 
+            Pulsante rosso di conferma eliminazione
+            Icona cestino 🗑️ per chiarezza
+            Colore rosso indica azione pericolosa
+        -->
+        <button type="submit" class="danger-button">🗑️ Sì, elimina definitivamente</button>
+        
+        <!-- 
+            Link per annullare e tornare all'area riservata
+            Grigio per indicare azione neutra/sicura
+            Torna indietro senza eliminare nulla
+        -->
+        <a href="{% url 'area_riservata' %}" class="cancel-link">❌ Annulla</a>
+    </form>
+    
+    <!-- 
+        SEZIONE DEBUG
+        Mostra informazioni utili durante lo sviluppo per verificare che tutto funzioni
+        Da rimuovere in produzione
+    -->
+    <hr>
+    <p><strong>Debug info:</strong></p>
+    
+    <!-- Mostra l'username dell'utente loggato -->
+    <p>Utente:  {{ request.user.username }}</p>
+    
+    <!-- Mostra l'ID dell'esperienza che si sta per eliminare -->
+    <p>ID esperienza: {{ esperienza.id }}</p>
+    
+    <!-- Mostra quale template viene usato -->
+    <p>Template: main/curriculum/esperienza_conferma_elimina.html</p>
+</body>
+</html>

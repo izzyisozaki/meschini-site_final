@@ -1,0 +1,89 @@
+{% extends 'main/common.html' %}
+
+{% block content %}
+    <!-- 
+        H2 dinamico
+        Cambia il titolo della pagina in base all'operazione (aggiungi o modifica)
+    -->
+    <h2>
+        {% if modifica %}
+            Modifica Esperienza Lavorativa
+        {% else %}
+            Aggiungi Esperienza Lavorativa
+        {% endif %}
+    </h2>
+    
+    <!-- 
+        SEZIONE MESSAGGI DI FEEDBACK
+        Mostra messaggi di successo (verde) o errore (rosso) inviati dalla view tramite messages. success() o messages.error()
+        Esempio: "Esperienza lavorativa modificata con successo!" 
+    -->
+    {% if messages %}
+        <!-- Se ci sono messaggi da mostrare, itera su ognuno -->
+        {% for message in messages %}
+            <!-- Controlla il tipo di messaggio (success o error) -->
+            {% if message.tags == 'success' %}
+                <!-- Messaggio di successo in verde -->
+                <p style="color: green;">{{ message }}</p>
+            {% else %}
+                <!-- Messaggio di errore in rosso -->
+                <p style="color: red;">{{ message }}</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    
+    <!-- 
+        FORM PER AGGIUNGERE/MODIFICARE ESPERIENZA LAVORATIVA
+        Lo stesso form viene usato per entrambe le operazioni
+        method="post" → Invia i dati al server quando clicchi il pulsante
+    -->
+    <form method="post">
+        <!-- 
+            {% csrf_token %}
+            Token di sicurezza obbligatorio in Django per proteggere da attacchi CSRF
+            Senza questo, Django blocca la richiesta POST con errore 403
+        -->
+        {% csrf_token %}
+        
+        <!-- 
+            {{ form.as_p }}
+            Django genera automaticamente tutti i campi del form (titolo, azienda, date, descrizione)
+            Se in modalità "modifica", i campi sono pre-compilati con i dati esistenti grazie a instance=
+            . as_p → Ogni campo è dentro un tag <p> per formattazione base
+        -->
+        {{ form.as_p }}
+        
+        <!-- 
+            Pulsante dinamico
+            Se modifica=True → "Aggiorna Esperienza"
+            Altrimenti → "Salva Esperienza"
+        -->
+        <button type="submit">
+            {% if modifica %}
+                Aggiorna Esperienza
+            {% else %}
+                Salva Esperienza
+            {% endif %}
+        </button>
+        
+        <!-- Link per tornare all'area riservata senza salvare le modifiche -->
+        <a href="{% url 'area_riservata' %}">Annulla</a>
+    </form>
+    
+    <!-- 
+        SEZIONE DEBUG
+        Informazioni utili durante lo sviluppo per verificare che tutto funzioni
+        Da rimuovere in produzione
+    -->
+    <hr>
+    <p><strong>Debug info:</strong></p>
+    
+    <!-- Mostra l'username dell'utente loggato -->
+    <p>Utente: {{ request.user.username }}</p>
+    
+    <!-- Mostra quale template viene usato -->
+    <p>Template: main/curriculum/esperienza_form.html</p>
+    
+    <!-- Mostra se siamo in modalità "modifica" o "aggiungi" -->
+    <p>Modalità: {% if modifica %}Modifica{% else %}Aggiungi{% endif %}</p>
+{% endblock %}

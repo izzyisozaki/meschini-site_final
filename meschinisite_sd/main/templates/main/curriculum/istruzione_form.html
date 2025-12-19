@@ -1,0 +1,74 @@
+<! DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Titolo dinamico della pagina -->
+    <title>
+        {% if modifica %}
+            Modifica Istruzione
+        {% else %}
+            Aggiungi Istruzione
+        {% endif %}
+    </title>
+</head>
+<body>
+    <!-- H2 dinamico -->
+    <h2>
+        {% if modifica %}
+            Modifica Istruzione
+        {% else %}
+            Aggiungi Istruzione
+        {% endif %}
+    </h2>
+    
+    <!-- 
+        SEZIONE MESSAGGI DI FEEDBACK
+        Mostra messaggi di successo (verde) o errore (rosso)
+    -->
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <p style="color: green;">{{ message }}</p>
+            {% else %}
+                <p style="color:  red;">{{ message }}</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    
+    <!-- 
+        FORM PER AGGIUNGERE/MODIFICARE ISTRUZIONE
+        Campi: istituzione, corso_di_studi, titolo_conseguito, data_inizio, data_fine, voto_finale
+    -->
+    <form method="post">
+        <!-- Token di sicurezza CSRF obbligatorio -->
+        {% csrf_token %}
+        
+        <!-- 
+            Django genera automaticamente tutti i campi del form
+            Se in modalità modifica, i campi sono pre-compilati con i dati esistenti
+        -->
+        {{ form.as_p }}
+        
+        <!-- Pulsante dinamico -->
+        <button type="submit">
+            {% if modifica %}
+                Aggiorna Istruzione
+            {% else %}
+                Salva Istruzione
+            {% endif %}
+        </button>
+        
+        <!-- Link per annullare e tornare all'area riservata -->
+        <a href="{% url 'area_riservata' %}">Annulla</a>
+    </form>
+    
+    <!-- SEZIONE DEBUG -->
+    <hr>
+    <p><strong>Debug info:</strong></p>
+    <p>Utente: {{ request.user.username }}</p>
+    <p>Template: main/curriculum/istruzione_form.html</p>
+    <p>Modalità: {% if modifica %}Modifica{% else %}Aggiungi{% endif %}</p>
+</body>
+</html>

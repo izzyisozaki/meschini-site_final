@@ -1,0 +1,247 @@
+{% extends 'main/common.html' %}
+{% block content %}
+<style>
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    main {
+        min-height: 100vh;
+        background: linear-gradient(-45deg, #085F63, #49BEB7, #FACF5A, #FF5A5F);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+        padding: 60px 20px;
+    }
+
+    .cards {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .hero-section {
+        text-align: center;
+        margin-bottom: 60px;
+        animation: fadeInUp 0.8s ease;
+    }
+
+    .hero-section h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 20px;
+        text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
+        letter-spacing: -1px;
+    }
+
+    .hero-section p {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.95);
+        max-width: 600px;
+        margin: 0 auto 30px;
+        line-height: 1.6;
+    }
+
+    .hero-cta {
+        display: inline-block;
+        background: white;
+        color: #085F63;
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-decoration: none;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .hero-cta:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        background: #FACF5A;
+    }
+
+    .cards-aziende {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 30px;
+        padding: 0 20px;
+    }
+
+    .card-azienda {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.8s ease;
+        animation-fill-mode: both;
+    }
+
+    .card-azienda:nth-child(1) { animation-delay: 0.1s; }
+    .card-azienda:nth-child(2) { animation-delay: 0.2s; }
+    .card-azienda:nth-child(3) { animation-delay: 0.3s; }
+
+    .card-azienda::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #085F63, #49BEB7, #FACF5A);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s ease;
+    }
+
+    .card-azienda:hover::before {
+        transform: scaleX(1);
+    }
+
+    .card-azienda:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #49BEB7, #085F63);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2rem;
+        color: white;
+        box-shadow: 0 5px 15px rgba(73, 190, 183, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .card-azienda:hover .card-icon {
+        transform: rotate(360deg) scale(1.1);
+        box-shadow: 0 8px 25px rgba(73, 190, 183, 0.5);
+    }
+
+    .card-azienda h2 {
+        font-size: 1.8rem;
+        color: #085F63;
+        margin-bottom: 15px;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .card-azienda p {
+        color: #555;
+        line-height: 1.8;
+        margin-bottom: 25px;
+        text-align: center;
+        font-size: 0.95rem;
+    }
+
+    .card-azienda button {
+        width: 100%;
+        background: linear-gradient(135deg, #49BEB7, #085F63);
+        color: white;
+        border: none;
+        padding: 14px 30px;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(73, 190, 183, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-azienda button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .card-azienda button:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .card-azienda button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(73, 190, 183, 0.5);
+    }
+
+    .card-azienda button:active {
+        transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+        .hero-section h1 {
+            font-size: 2.5rem;
+        }
+        
+        .cards-aziende {
+            grid-template-columns: 1fr;
+            padding: 0 10px;
+        }
+    }
+</style>
+
+<main>
+    <section class="cards">
+        <div class="hero-section">
+            <h1>Le Nostre Aziende Partner</h1>
+            <p>Scopri le eccellenze che collaborano con noi per creare nuove opportunità</p>
+            <a href="#" class="hero-cta">Diventa Partner</a>
+        </div>
+
+        <section class="cards-aziende">
+            <div class="card-azienda">
+                <div class="card-icon">🏢</div>
+                <h2>Azienda 1</h2>
+                <p>Descrizione Azienda 1</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                <button>Scopri di più →</button>
+            </div>
+
+            <div class="card-azienda">
+                <div class="card-icon">🚀</div>
+                <h2>Azienda 2</h2>
+                <p>Descrizione Azienda 2
+                </p>
+                <button>Scopri di più →</button>
+            </div>
+
+            <div class="card-azienda">
+                <div class="card-icon">💡</div>
+                <h2>Azienda 3</h2>
+                <p>Descrizione Azienda 3</p>
+            </div>
+        </section>
+    </section>
+</main>
+
+{% endblock %}

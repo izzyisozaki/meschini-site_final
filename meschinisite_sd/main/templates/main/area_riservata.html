@@ -1,0 +1,239 @@
+{% extends 'main/common.html' %}
+
+{% block content %}
+<style>
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .welcome-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    
+    .welcome-card h1 {
+        margin: 0;
+        font-size: 36px;
+    }
+    
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+    
+    .info-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .card-title {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f0f0f0;
+        font-size: 20px;
+        color: #333;
+    }
+    
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #f5f5f5;
+    }
+    
+    .info-label {
+        font-weight: 600;
+        color: #666;
+    }
+    
+    .info-value {
+        color: #333;
+    }
+    
+    .skill-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 15px;
+        margin: 3px;
+        font-size: 13px;
+    }
+    
+    .experience-item {
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .position {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 3px;
+    }
+    
+    .company {
+        color: #666;
+        margin-bottom: 3px;
+    }
+    
+    .dates {
+        color: #999;
+        font-size: 13px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+    }
+    
+    .btn-logout {
+        display: block;
+        width: 100%;
+        max-width: 200px;
+        margin: 40px auto 0;
+        background: #dc3545;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 600;
+        text-align: center;
+        transition: background 0.3s;
+    }
+    
+    .btn-logout:hover {
+        background: #c82333;
+    }
+</style>
+
+<div class="dashboard-container">
+    <!-- Benvenuto -->
+    <div class="welcome-card">
+        <h1>👋 Benvenuto, {{ user.username|capfirst }}!</h1>
+        <p>Questa è la tua area personale riservata</p>
+    </div>
+    
+    <!-- Messaggi -->
+    {% if messages %}
+        {% for message in messages %}
+            <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <div class="dashboard-grid">
+        <!-- Dati Personali -->
+        <div class="info-card">
+            <div class="card-title">👤 Dati Personali</div>
+            
+            {% if dati %}
+                <div class="info-item">
+                    <span class="info-label">Nome:</span>
+                    <span class="info-value">{{ dati.nome }} {{ dati.cognome }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">{{ dati.email }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Telefono:</span>
+                    <span class="info-value">{{ dati.telefono }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Data di nascita:</span>
+                    <span class="info-value">{{ dati.data_nascita|date:"d/m/Y" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Indirizzo:</span>
+                    <span class="info-value">{{ dati.indirizzo }}</span>
+                </div>
+                {% if dati.foto %}
+                <div style="text-align: center; margin-top: 15px;">
+                    <img src="{{ dati.foto.url }}" alt="Foto profilo" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #667eea;">
+                </div>
+                {% endif %}
+            {% else %}
+                <div class="empty-state">
+                    <p>⚠️ Nessun dato personale trovato.</p>
+                    <p>Completa la registrazione per aggiungere i tuoi dati.</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Esperienze Lavorative -->
+        <div class="info-card">
+            <div class="card-title">💼 Esperienze Lavorative</div>
+            <a href="/curriculum/esperienza/aggiungi/">+</a><br>
+			<hr>
+            {% if esperienze %}
+                {% for esperienza in esperienze %}
+				     <a href="{% url 'curriculum:modifica_esperienza' esperienza.pk %}">Modifica</a>
+					 <a href="{% url 'curriculum:elimina_esperienza' esperienza.pk %}">X</a>
+
+
+                    <div class="experience-item">
+                        <div class="position">{{ esperienza.posizione }}</div>
+                        <div class="company">{{ esperienza.azienda }}</div>
+						<div class="dates">
+					{{ esperienza.data_inizio|date:"M Y" }} -
+        {% if esperienza.data_fine %}
+            {{ esperienza.data_fine|date:"M Y" }}
+        {% else %}
+            Presente
+        {% endif %}
+    </div>
+                        <!-- <div class="dates"> -->
+                            <!-- {{ esperienza.data_inizio|date:"M Y" }} -  -->
+                            <!-- {{ esperienza.data_fine|date:"M Y"|default:"Presente" }} -->
+                        <!-- </div> -->
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <p>📁 Nessuna esperienza lavorativa registrata.</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Competenze -->
+        <div class="info-card">
+            <div class="card-title">🎯 Competenze</div>
+            
+            {% if competenze %}
+                <div style="margin-top: 10px;">
+                    {% for competenza in competenze %}
+                        <span class="skill-badge">
+                            {{ competenza.nome }} ({{ competenza.livello }})
+                        </span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>📊 Nessuna competenza registrata.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Logout -->
+   <form method="post" action="{% url 'logout' %}">
+  {% csrf_token %}
+  <button type="submit" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+    🚪 Logout
+  </button>
+</form>
+{% endblock %}

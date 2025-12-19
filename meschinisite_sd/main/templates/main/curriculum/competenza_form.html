@@ -1,0 +1,95 @@
+<! DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 
+        Titolo dinamico della pagina
+        Se modifica=True → "Modifica Competenza"
+        Altrimenti → "Aggiungi Competenza"
+    -->
+    <title>
+        {% if modifica %}
+            Modifica Competenza
+        {% else %}
+            Aggiungi Competenza
+        {% endif %}
+    </title>
+</head>
+<body>
+    <!-- 
+        H2 dinamico
+        Cambia in base all'operazione (aggiungi o modifica)
+    -->
+    <h2>
+        {% if modifica %}
+            Modifica Competenza
+        {% else %}
+            Aggiungi Competenza
+        {% endif %}
+    </h2>
+    
+    <!-- 
+        SEZIONE MESSAGGI DI FEEDBACK
+        Mostra messaggi di successo (verde) o errore (rosso)
+    -->
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <p style="color: green;">{{ message }}</p>
+            {% else %}
+                <p style="color: red;">{{ message }}</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    
+    <!-- 
+        FORM PER AGGIUNGERE/MODIFICARE COMPETENZA
+        Stesso form per entrambe le operazioni
+        method="post" → Invia i dati al server
+    -->
+    <form method="post">
+        <!-- 
+            Token di sicurezza CSRF
+            Obbligatorio per proteggere da attacchi
+        -->
+        {% csrf_token %}
+        
+        <!-- 
+            Django genera automaticamente i campi del form
+            Campi: competenza, livello, certificazioni
+            Se in modalità modifica, i campi sono pre-compilati
+            . as_p → Ogni campo dentro un tag <p>
+        -->
+        {{ form.as_p }}
+        
+        <!-- 
+            Pulsante dinamico
+            Se modifica → "Aggiorna Competenza"
+            Altrimenti → "Salva Competenza"
+        -->
+        <button type="submit">
+            {% if modifica %}
+                Aggiorna Competenza
+            {% else %}
+                Salva Competenza
+            {% endif %}
+        </button>
+        
+        <!-- Link per annullare e tornare all'area riservata -->
+        <a href="{% url 'area_riservata' %}">Annulla</a>
+    </form>
+    
+    <!-- 
+        SEZIONE DEBUG
+        Informazioni utili per verificare che tutto funzioni
+        Da rimuovere in produzione
+    -->
+    <hr>
+    <p><strong>Debug info:</strong></p>
+    <p>Utente: {{ request.user.username }}</p>
+    <p>Template: main/curriculum/competenza_form.html</p>
+    <p>Modalità: {% if modifica %}Modifica{% else %}Aggiungi{% endif %}</p>
+</body>
+</html>

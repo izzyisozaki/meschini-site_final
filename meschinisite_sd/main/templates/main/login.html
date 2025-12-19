@@ -1,0 +1,98 @@
+{% extends 'main/common.html' %}
+
+{% block content %}
+<style>
+    .container {
+        max-width: 500px;
+        margin: 40px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    form input {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        box-sizing: border-box;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        background: #007bff;
+        color: white;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background: #0056b3;
+    }
+
+    .error {
+        background: #ffdddd;
+        padding: 12px;
+        border-left: 4px solid red;
+        margin-bottom: 15px;
+        color: #a00;
+        border-radius: 4px;
+    }
+    
+    .register-link {
+        text-align: center;
+        margin-top: 15px;
+    }
+    
+    .register-link a {
+        color: #007bff;
+        text-decoration: none;
+    }
+    
+    .register-link a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="container">
+    <h2>Login Area Riservata</h2>
+
+    {% if form.errors %}
+        <div class="error">
+            Username o password non corretti. Riprova.
+        </div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <!-- Campo Username -->
+        <label for="id_username">Username</label>
+        <input type="text" name="username" id="id_username" 
+               placeholder="Inserisci username" required>
+        
+        <!-- Campo Password -->
+        <label for="id_password">Password</label>
+        <input type="password" name="password" id="id_password" 
+               placeholder="Inserisci password" required>
+        
+        <button type="submit">Accedi</button>
+    </form>
+    
+    <div class="register-link">
+        <p>Non hai un account? <a href="{% url 'register' %}">Registrati qui</a></p>
+    </div>
+</div>
+{% endblock %}

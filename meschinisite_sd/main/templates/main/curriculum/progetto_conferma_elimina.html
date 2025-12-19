@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conferma Eliminazione</title>
+    
+    <!-- Stile minimale per distinguere visivamente l'azione pericolosa -->
+    <style>
+        .warning-box {
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .danger-button {
+            background-color: #dc3545;
+            color:  white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .danger-button:hover {
+            background-color: #c82333;
+        }
+        .cancel-link {
+            margin-left: 10px;
+            padding: 10px 20px;
+            text-decoration: none;
+            background-color: #6c757d;
+            color:  white;
+            border-radius:  5px;
+            display: inline-block;
+        }
+        .cancel-link:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <!-- Titolo con icona di avviso -->
+    <h2>⚠️ Conferma Eliminazione</h2>
+    
+    <!-- Box di avviso con sfondo giallo -->
+    <div class="warning-box">
+        <p><strong>Sei sicuro di voler eliminare questo progetto?</strong></p>
+        
+        <!-- 
+            Dettagli del progetto da eliminare
+            Mostra tutti i dati per permettere all'utente di verificare
+        -->
+        <ul>
+            <li><strong>Titolo:</strong> {{ progetto.titolo }}</li>
+            <li><strong>Descrizione:</strong> {{ progetto.descrizione|truncatewords:20 }}</li>
+            {% if progetto.link %}
+                <li><strong>Link:</strong> <a href="{{ progetto.link }}" target="_blank">{{ progetto.link }}</a></li>
+            {% endif %}
+            <li><strong>Data Completamento:</strong> {{ progetto.data_completamento }}</li>
+        </ul>
+        
+        <!-- Avviso rosso che l'azione è irreversibile -->
+        <p style="color: red;"><strong>⚠️ Questa azione è irreversibile!</strong></p>
+    </div>
+    
+    <!-- 
+        FORM per confermare l'eliminazione
+        POST request elimina definitivamente dal database
+    -->
+    <form method="post" action="">
+        <!-- Token di sicurezza CSRF -->
+        {% csrf_token %}
+        
+        <!-- Pulsante rosso di conferma eliminazione -->
+        <button type="submit" class="danger-button">🗑️ Sì, elimina definitivamente</button>
+        
+        <!-- Link per annullare e tornare indietro -->
+        <a href="{% url 'area_riservata' %}" class="cancel-link">❌ Annulla</a>
+    </form>
+    
+    <!-- SEZIONE DEBUG -->
+    <hr>
+    <p><strong>Debug info:</strong></p>
+    <p>Utente: {{ request.user.username }}</p>
+    <p>ID progetto: {{ progetto.id }}</p>
+    <p>Template: main/curriculum/progetto_conferma_elimina.html</p>
+</body>
+</html>
